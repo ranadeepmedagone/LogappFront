@@ -40,7 +40,7 @@
         <h1>Description:</h1>
         <el-input
           v-if="editMode"
-          v-model="description"
+          v-model="descriptionText"
           type="textarea"
           :rows="2"
           placeholder="Please input"
@@ -109,7 +109,7 @@ export default {
     return {
       editMode: false,
       textarea: '',
-      description: '',
+      descriptionText: '',
       // isVisible: false,
       tag: '',
       types: [],
@@ -130,13 +130,13 @@ export default {
     },
     setEditMode() {
       this.editMode = true
-      this.description = this.log.description
+      this.descriptionText = this.log.description
     },
     async updateLog() {
-      this.isVisible = false
+      this.editMode = false
       console.log(this.description)
       await this.$store.dispatch('updateLog', {
-        description: this.description,
+        description: this.descriptionText,
         id: this.$route.params.id,
         tag: this.tag,
         type: this.types,

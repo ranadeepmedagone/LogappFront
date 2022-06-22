@@ -85,7 +85,7 @@
       width="120">
       <template slot-scope="scope">{{ scope.row.date }}</template>
     </el-table-column> -->
-      <el-table-column prop="log_id" label="Id" width="120"> </el-table-column>
+      <el-table-column prop="id" label="Id" width="120"> </el-table-column>
       <el-table-column prop="title" label="Title" width="120">
       </el-table-column>
       <el-table-column prop="description" label="Description" width="120">
@@ -180,7 +180,7 @@ export default {
     async rowClick(row, column, event) {
       alert(row.id)
       await this.$store.dispatch('goToLog', row.id)
-      await this.$router.push('/id' + row.id)
+      await this.$router.push('/' + row.id)
     },
     async getLogs() {
       console.log(this.queryParams)

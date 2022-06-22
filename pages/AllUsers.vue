@@ -37,11 +37,6 @@
       </div>
 
       <div v-if="update">
-        <el-input
-          placeholder="Please input"
-          v-if="isVisible"
-          v-model="user.email"
-        ></el-input>
         <el-table-column prop="email" label="Email" show-overflow-tooltip>
         </el-table-column>
       </div>
@@ -60,24 +55,22 @@
       </div>
 
       <el-table-column :align="right">
-        <template slot-scope="scope">
-          <div class="btn">
-            <el-button
-              v-if="users[scope.$index].status == true"
-              size="mini"
-              type="danger"
-              @click="deleteUser(users[scope.$index].user_id)"
-              >Delete</el-button
-            >
+        <div class="btn">
+          <el-button
+            v-if="users.status == true"
+            size="mini"
+            type="danger"
+            @click="deleteUser(users.user_id)"
+            >Delete</el-button
+          >
 
-            <el-button
-              v-if="users[scope.$index].status == false"
-              size="mini"
-              @click="restoreUser(users[scope.$index].user_id)"
-              >Deactivate</el-button
-            >
-          </div>
-        </template>
+          <el-button
+            v-if="users.status == false"
+            size="mini"
+            @click="restoreUser(users.user_id)"
+            >Deactivate</el-button
+          >
+        </div>
       </el-table-column>
     </el-table>
   </div>

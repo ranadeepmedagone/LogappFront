@@ -8,6 +8,7 @@ const state = () => ({
     tags:[],
     tagTypes:[],
     users:[],
+    status:[],
     // current_tags: [],
     log: [],
     // tag:[],
@@ -18,6 +19,7 @@ const state = () => ({
     title: null,
     description:null,
     stack_trace: null,
+    is_seen: null,
     
 
 })
@@ -58,9 +60,7 @@ const mutations = {
     // updatePost(state, data) {
     //     state.post.title = data;
     // },
-    // updateUser(state, data) {
-    //     state.fullname = data;
-    // },
+    
     setError(state, data) {
         state.errorMsg = data
     },
@@ -77,9 +77,19 @@ const mutations = {
         console.log(data.description)
         state.description = data.description
       },
-    updateUser(state, data) {
-        state.status = data;
-    },
+      updateUser(state, data) {
+        console.log(data.status)
+        state.status = data.status
+      },
+
+      unseen(state, id) {
+        console.log(data.status)
+        state.is_seen = data.is_seen
+      },
+    //   updateUser(state, data) {
+    //     const index = state.users.findIndex((user) => user.id === user.id)
+    //     state.users[index].title = data.title
+    //   },
     // updateUser(state,data) {
     //     const index = state.users.findIndex((user) => user.id === user.id)
     //     state.users[index].status = data.status
@@ -127,7 +137,7 @@ const actions = {
             console.log(res.data)
             if(res.data.is_superuser==true){
                 this.$axios.setHeader('Authorization', 'Bearer ' + res.data.token)
-                this.$router.push({ path: '/SuperUserLoghome' })
+                this.$router.push({ path: '/home' })
             }else{
                 this.$axios.setHeader('Authorization', 'Bearer ' + res.data.token)
                 this.$router.push({ path: '/Loghome' })
@@ -145,7 +155,10 @@ const actions = {
     
     async updateLog({}, data) {
         await this.$axios.put('http://localhost:5000/api/log/' + data.id, {description: data.description, tag: data.tag, type: data.type})
-      },
+    },
+    async updateUser({}, data) {
+        await this.$axios.put('http://localhost:5000/api/user/' + data.id, {status: data.status})
+    },
     async getAllLogs({ commit, state }, data) {
         await this.$axios.get('http://localhost:5000/api/Log', {
             params: {
@@ -200,12 +213,19 @@ const actions = {
         commit('setUser', res.data)
     },
 
-    async updateUser({ commit }, data) {
-        console.log(data)
-        const res = await this.$axios.put('http://localhost:5000/api/user/'+data.id ,{status: data.status})
-        console.log(res, 'Updated')
-        commit('updateStatus', data.status)
-    }, 
+    // async updateUser({ commit }, data) {
+    //     await this.$axios
+    //       .put('http://localhost:5000/api/user/' + data.id, {
+    //         headers: {
+    //           Authorization: 'Bearer ' + this.state.token,
+    //         },
+    //       })
+    //       .then((res) => {
+    //         console.user(res)
+    //         console.user('called')
+    //         commit('updateUser', data)
+    //       })
+    //   },
     
     
     
@@ -245,6 +265,7 @@ const actions = {
         })
       },
 
+      
     // async getAllTags({ commit, state }, data) {
     //     await this.$axios.get('http://localhost:5000/api/Tag', {
             
@@ -264,7 +285,12 @@ const actions = {
     //     commit('setTag', res.data)
     // },
 
-      
+    async unseen({commit}, id) {
+        // await this.$axios.put('http://localhost:5000/api/log/seen' + is_seen)
+        const res = await this.$axios.put('http://localhost:5000/api/log/seen', id)
+         console.log('at least reaching this point');
+         commit('unseen', id)
+   },
 
 
 }

@@ -7,12 +7,12 @@ import scrollBehavior from './router.scrollBehavior.js'
 const _53bc8550 = () => interopDefault(import('..\\pages\\all.vue' /* webpackChunkName: "pages/all" */))
 const _27621de0 = () => interopDefault(import('..\\pages\\AllUsers.vue' /* webpackChunkName: "pages/AllUsers" */))
 const _168715b4 = () => interopDefault(import('..\\pages\\CreateUserLog.vue' /* webpackChunkName: "pages/CreateUserLog" */))
+const _688c0a38 = () => interopDefault(import('..\\pages\\home.vue' /* webpackChunkName: "pages/home" */))
 const _13bf493a = () => interopDefault(import('..\\pages\\Loghome.vue' /* webpackChunkName: "pages/Loghome" */))
 const _09f40656 = () => interopDefault(import('..\\pages\\SuperUserLoghome.vue' /* webpackChunkName: "pages/SuperUserLoghome" */))
-const _fdb27326 = () => interopDefault(import('..\\pages\\UpdateUser.vue' /* webpackChunkName: "pages/UpdateUser" */))
+const _8be30b42 = () => interopDefault(import('..\\pages\\Users.vue' /* webpackChunkName: "pages/Users" */))
 const _059aff6e = () => interopDefault(import('..\\pages\\index.vue' /* webpackChunkName: "pages/index" */))
 const _66c600f1 = () => interopDefault(import('..\\pages\\_id.vue' /* webpackChunkName: "pages/_id" */))
-const _cfb77e98 = () => interopDefault(import('..\\pages\\id.vue' /* webpackChunkName: "pages/id" */))
 
 const emptyFn = () => {}
 
@@ -38,6 +38,10 @@ export const routerOptions = {
     component: _168715b4,
     name: "CreateUserLog"
   }, {
+    path: "/home",
+    component: _688c0a38,
+    name: "home"
+  }, {
     path: "/Loghome",
     component: _13bf493a,
     name: "Loghome"
@@ -46,9 +50,9 @@ export const routerOptions = {
     component: _09f40656,
     name: "SuperUserLoghome"
   }, {
-    path: "/UpdateUser",
-    component: _fdb27326,
-    name: "UpdateUser"
+    path: "/Users",
+    component: _8be30b42,
+    name: "Users"
   }, {
     path: "/",
     component: _059aff6e,
@@ -56,11 +60,7 @@ export const routerOptions = {
   }, {
     path: "/:id",
     component: _66c600f1,
-    children: [{
-      path: "",
-      component: _cfb77e98,
-      name: "id"
-    }]
+    name: "id"
   }],
 
   fallback: false

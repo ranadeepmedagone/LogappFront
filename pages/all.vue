@@ -1,199 +1,125 @@
 <template>
-  <div id="app">
-    <sticky class="st">
-      <div class="smch">
-        <el-button
-          @click="$router.back()"
-          icon="el-icon-back"
-          plain
-        ></el-button>
-        <el-input
-          :data="users"
-          v-model="search"
-          @click="search"
-          placeholder="Type to search"
-        />
-        <el-button type="submit" @click="goToCreate()">Create</el-button>
-      </div>
-    </sticky>
+  <div class="smch">
+    <div class="nav">
+      <el-button @click="$router.back()" icon="el-icon-back" plain></el-button>
+
+      <el-button type="submit" @click="goToCreate()">Create</el-button>
+    </div>
     <br />
     <br />
 
-    <!-- <el-tooltip
-      content="Click on any of the cells or on the edit button to edit content"
-    >
-      <i class="el-icon-info"></i>
-    </el-tooltip> -->
-    <el-table :data="users" style="width: 100%">
-      <el-table-column label="Operations" min-width="180">
-        <template slot-scope="scope">
-          <!-- <el-button
-            v-if="users[scope.$index].status == true"
-            icon="el-icon-edit"
-            @click="setEditMode(row, index)"
-          > -->
-          <!-- </el-button> -->
-          <div class="btn">
-            <el-button
-              v-if="users[scope.$index].status == true"
-              type="success"
-              icon="el-icon-check"
-              @click="saveRow(user.user_id)"
-            >
-            </el-button>
-            <!-- <el-button
-              v-if="users[scope.$index].status == true"
-              size="mini"
-              type="danger"
-              @click="deleteUser(users[scope.$index].id)"
-              >Delete</el-button
-            > -->
+    <el-table ref="multipleTable" :data="users" style="width: 100%">
+      <el-table-column label="Icon">
+        <i class="el-icon-user-solid"></i>
+      </el-table-column>
+      <el-table-column prop="id" label="UserId" width="120"> </el-table-column>
 
-            <el-button
-              v-if="users[scope.$index].status == false"
-              size="mini"
-              @click="restoreUser()"
-              >Deleted</el-button
-            >
-          </div>
-        </template>
-      </el-table-column>
+      <el-table-column prop="name" label="Name" width="120"> </el-table-column>
 
-      <el-table-column prop="user_id" label="UserId" width="120">
+      <el-table-column prop="email" label="Email" show-overflow-tooltip>
       </el-table-column>
-      <el-table-column prop="name" label="Name" min-width="180">
-      </el-table-column>
-
-      <el-table-column prop="email" label="Email" min-width="180">
-      </el-table-column>
-      <el-table-column prop="is_superuser" label="IsSuperUser" min-width="180">
-        <editable-cell
-          :show-input="row.editMode"
-          slot-scope="{ row }"
-          v-model="statusText"
+      <template v-if="update">
+        <el-table-column
+          v-if="isVisible"
+          prop="status"
+          label="Status"
+          v-bind="status"
         >
-          <span slot="content">{{ row.status }}</span>
-        </editable-cell>
-      </el-table-column>
+          <template slot-scope="scope" v-bind="status">
+            <el-input-number :min="0" size="small" controls-position="right" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          v-else
+          prop="status"
+          label="Status"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column v-if="!isVisible" label="Edit">
+          <el-button @click="Visible" icon="el-icon-edit"> </el-button>
+        </el-table-column>
+        <el-table-column v-else>
+          <el-button type="success" @click="update" icon="el-icon-check">
+          </el-button>
+        </el-table-column>
+      </template>
     </el-table>
   </div>
 </template>
 
 <script>
-import EditableCell from '../components/EditableCell.vue'
+// import { title } from 'process'
 import { mapState } from 'vuex'
-
 export default {
-  name: 'App',
-  components: {
-    EditableCell,
-  },
   data() {
     return {
-      editMode: false,
-      statusText: '',
-      // user: [
-      //   {
-      //     name: '',
-      //   },
-      //   {
-      //     hash_password: '',
-      //   },
-      // ],
+      search: '',
+      isVisible: false,
+      name: '',
+      email: '',
+      status: '',
     }
   },
+
   computed: {
     ...mapState(['users', 'user']),
   },
 
-  async mounted(row) {
+  async mounted() {
     await this.$store.dispatch('getAllUsers')
 
-    return {
-      ...row,
-      editMode: false,
-    }
+    return
   },
+
   methods: {
-    setEditMode(row, index) {
-      row.editMode = true
+    Visible() {
+      this.isVisible = !this.isVisible
+      this.status = this.user.status
     },
-    saveRow(row, index) {
-      row.editMode = false
-    },
-    saveRow(user_id) {
-      row.editMode = false
-      alert(this.user.status)
+    async update() {
       // this.isVisible = false
       console.log(this.status)
-      this.$store.dispatch('updateUser', user_id, {
+      await this.$store.dispatch('updateUser', {
+        status: this.status,
         id: this.$route.params.id,
-        status: this.statusText,
       })
+      this.$store.dispatch('goToUser', this.$route.params.id)
     },
-    // Visible() {
-    //   alert()
-    //   this.isVisible = true
-    //   this.name = this.user.name
-    //   this.email = this.user.email
-    //   this.hash_password = this.user.hash_password
-    //   // await this.$$store.dispatch('updatePost', this.title)
-    // },
     // async goToUpdate() {
     //   await this.$router.push('/UpdateUser')
     // },
     async goToCreate() {
       await this.$router.push('/CreateUserLog')
     },
-    async restoreUser() {
-      this.$router.push('/all')
-    },
-
-    async deleteUser(id, row) {
-      console.log('reached')
-      await this.$store.dispatch('deleteUser', id)
-      console.log('reached1')
-      this.$router.push('/all')
-      console.log('reached3')
-      await this.$store.dispatch('getAllUsers')
-    },
-    async saveRow(row, index) {
-      row.editMode = false
-      await this.$store.dispatch(
-        'updateUser',
-        this.name,
-
-        this.hash_password
-      )
-    },
+    // async deleteUser(id, row) {
+    //   console.log('reached')
+    //   await this.$store.dispatch('deleteUser', id)
+    //   console.log('reached1')
+    //   this.$router.push('/AllUsers')
+    //   console.log('reached3')
+    //   await this.$store.dispatch('getAllUsers')
+    // },
   },
-  //   mounted() {
-  //     this.gridData = this.gridData.map((row) => {
-  //       return {
-  //         ...row,
-  //         editMode: false,
-  //       }
-  //     })
-  //   },
 }
 </script>
 
-<style>
-.edit-cell {
-  min-height: 35px;
-  cursor: pointer;
-}
-#app {
-  margin: 20px;
-}
-.smch {
+<style scoped>
+.nav {
   display: flex;
   justify-content: space-between;
 }
-.st {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 0;
-  background-color: yellow;
+.select {
+  display: flex;
+  justify-content: space-between;
 }
+.smch {
+  margin: 30px;
+}
+.btn {
+  display: flex;
+}
+/* .title{
+ font-weight: bold;
+} */
 </style>

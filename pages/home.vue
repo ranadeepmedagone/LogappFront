@@ -60,7 +60,9 @@
       </div> -->
 
       <div>
-        <el-button><nuxt-link to="/all">All Users</nuxt-link></el-button>
+        <el-button type="submit" @click="addTag"
+          ><nuxt-link to="/all">All Users</nuxt-link></el-button
+        >
       </div>
       <div>
         <el-button type="submit"
@@ -105,10 +107,13 @@
         show-overflow-tooltip
       >
       </el-table-column>
-      <el-table-column :align="right">
-        <template slot-scope="">
-          <el-button size="mini" icon="el-icon-view"></el-button>
-        </template>
+      <el-table-column>
+        <el-button size="mini" icon="el-icon-view" v-if="true" @click="unseen()"
+          >Unseen</el-button
+        >
+        <el-button size="mini" icon="el-icon-view" v-if="false" @click="seen()"
+          >Seen</el-button
+        >
       </el-table-column>
     </el-table>
   </div>
@@ -214,6 +219,10 @@ export default {
     getTags() {
       alert()
       this.$store.dispatch('getTags')
+    },
+    async unseen(data) {
+      await this.$store.dispatch('unseen', data)
+      this.$router.push('/home')
     },
 
     // async goToLog(id) {
